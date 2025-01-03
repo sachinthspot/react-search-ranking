@@ -52,7 +52,10 @@ const SearchResults = () => {
         IMPRESSIONS_OVERALL: hit._source.IMPRESSIONS_OVERALL,
         IS_VERIFIED: hit._source.IS_VERIFIED,
         AUTHOR: hit._source.AUTHOR,
+        id: hit._id,
+        index: hit._index
       }));
+      console.log('mappedData',result.hits.hits);
       setData(mappedData);
       setSelectedItem(mappedData[0]);
     } catch (err) {
@@ -67,6 +70,17 @@ const SearchResults = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDeleteClick = async (resultElm) => {
+    const res = await fetch(
+      `http://localhost:9200/${resultElm.index}/_doc/${resultElm.id}`
+    );
+    const data = await res.json();
+    if(res.ok) {
+      fetchData();
+    }
+    console.log(data, res);
+  }
 
   const handleInputChange = (searchQuery) => {
     setQuery(searchQuery);
@@ -167,7 +181,6 @@ const SearchResults = () => {
       {data.length > 0 && !loading && <div style={{background: '#fff',
     margin: '0 10px',
     padding: '20px 0', borderBottom: '1px solid #DBDFE7'}}><p style={{margin: '0 10px', fontWeight: '600'}}>Showing Result for '{query}'</p><p style={{margin: '0 10px 10px 10px', fontSize: '10px'}}>Found {data.length} results</p></div>}
-    {loading && <p>Loading...</p>}
       {(data.length > 0 && !loading) && <div style={{ display: "flex", margin: '0 15px' }}>
         <div
           style={{
@@ -187,21 +200,25 @@ const SearchResults = () => {
                   borderRadius: "5px",
                   padding: "15px",
                   display: 'flex',
+                  justifyContent: 'space-between',
                   cursor: "pointer",
                   backgroundColor: selectedItem === item ? "#f2f7ff" : "#fff",
                   borderBottom: '1px solid rgb(219, 223, 231)'
                 }}
-              ><div style={{marginRight: '10px'}}>
-                {/* OBJECT_TYPE_FACET */}
-                {item.OBJECT_TYPE_FACET === 'ANSWER' && <img style={{ width: '24px' }} src={Answer} alt="Search Icon" />}
-                {item.OBJECT_TYPE_FACET === 'PINBOARD' && <img style={{ width: '24px' }} src={Pinboard} alt="Search Icon" />}
-              </div>
+              >
+                <div >
+                  {item.OBJECT_TYPE_FACET === 'ANSWER' && <img style={{ width: '24px' }} src={Answer} alt="Search Icon" />}
+                  {item.OBJECT_TYPE_FACET === 'PINBOARD' && <img style={{ width: '24px' }} src={Pinboard} alt="Search Icon" />}
+                </div>
+                <div style={{width: 'calc(100% - 100px)'}}>
+                  <a style={{color: '#2770EF', fontWeight: '600', fontSize: '18px'}}>{item.NAME}</a>
+                  {item.DESCRIPTION !== 'null_value' && <p style={{fontSize: '14px', fontStyle: 'italic'}}>{item.DESCRIPTION}</p>}
+                  <p style={{fontSize: '14px'}}>{getTimeAgo(item.MODIFIED_MS)} by <a style={{color: '#2770EF'}}>{item.AUTHOR}</a></p>
+                  <p style={{margin: '0', fontSize: '14px'}}>{item.IMPRESSIONS_OVERALL} views</p>
+                  {item.IS_VERIFIED && <span style={{color: '#2770EF'}}>VERIFIED</span>}
+                </div>
                 <div>
-                <a style={{color: '#2770EF', fontWeight: '600', fontSize: '18px'}}>{item.NAME}</a>
-                <p style={{fontSize: '14px', fontStyle: 'italic'}}>{item.DESCRIPTION}</p>
-                <p style={{fontSize: '14px'}}>{getTimeAgo(item.MODIFIED_MS)} by <a style={{color: '#2770EF'}}>{item.AUTHOR}</a></p>
-                <p style={{margin: '0', fontSize: '14px'}}>{item.IMPRESSIONS_OVERALL} views</p>
-                {item.IS_VERIFIED && <span style={{color: '#2770EF'}}>VERIFIED</span>}
+                  <button style={{backgroundColor: 'inherit', border: '0', cursor: 'pointer'}} onClick={() => handleDeleteClick(item)}>Delete</button>
                 </div>
               </div>
             ))}

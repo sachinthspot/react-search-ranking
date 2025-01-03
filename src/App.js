@@ -237,7 +237,7 @@ const SearchResults = () => {
                   {item.OBJECT_TYPE_FACET === 'ANSWER' && <img style={{ width: '24px' }} src={Answer} alt="Search Icon" />}
                   {item.OBJECT_TYPE_FACET === 'PINBOARD' && <img style={{ width: '24px' }} src={Pinboard} alt="Search Icon" />}
                 </div>
-                <div style={{width: 'calc(100% - 100px)'}}>
+                <div style={{width: 'calc(100% - 30px)'}}>
                   <a style={{color: '#2770EF', fontWeight: '600', fontSize: '18px'}}>{item.NAME}</a>
                   {item.DESCRIPTION !== 'null_value' && <p style={{fontSize: '14px', fontStyle: 'italic'}}>{item.DESCRIPTION}</p>}
                   <p style={{fontSize: '14px'}}>{getTimeAgo(item.MODIFIED_MS)} by <a style={{color: '#2770EF'}}>{item.AUTHOR}</a></p>

@@ -3,6 +3,7 @@ import HeaderLogo from './assets/header-img.png';
 import SearchIcon from './assets/search.png';
 import Answer from './assets/answer-img.png';
 import Pinboard from './assets/pinboard-img.png';
+import ClipLoader from "react-spinners/ClipLoader";
 
 // Utility function to format date
 const formatDate = (timestamp) => {
@@ -99,6 +100,26 @@ const SearchResults = () => {
     }
   };
 
+//   const getObjectHref = ({
+//     resultType,
+//     objectId,
+// }) => {
+//     // const search = preserveSearchParams
+//     //     ? getQueryParamsAndQueryString().queryString
+//     //     : '';
+//     const ResultType = {
+//       searchAnswer: 'searchAnswer',
+//       searchPinboard: 'searchPinboard',
+//       searchPinboardViz: 'searchPinboardViz',
+//   };
+//     const resultTypeToUrlTermMap = {
+//       [ResultType.searchPinboard]: 'pinboard',
+//       [ResultType.searchAnswer]: 'saved-answer',
+//       [ResultType.searchPinboardViz]: 'pinboard',
+//   };
+//     return `/#/${resultTypeToUrlTermMap[resultType]}/${objectId}/`;
+// };
+
   const getTimeAgo = (timestamp) => {
     const now = Date.now();
     const diff = now - timestamp;
@@ -177,7 +198,13 @@ const SearchResults = () => {
       </div>
       {/* Other components remain unchanged */}
       {data.length === 0 && !loading && <p style={{ color: "#888", textAlign: 'center', height:  "calc(100vh - 220px)" }}>No results found.</p>}
-      {loading && <p>Loading...</p>}
+      {loading && <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height:  "calc(100vh - 220px)" }}><ClipLoader
+        color={'grey'}
+        loading={true}
+        size={50}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      /></div>}
       {data.length > 0 && !loading && <div style={{background: '#fff',
     margin: '0 10px',
     padding: '20px 0', borderBottom: '1px solid #DBDFE7'}}><p style={{margin: '0 10px', fontWeight: '600'}}>Showing Result for '{query}'</p><p style={{margin: '0 10px 10px 10px', fontSize: '10px'}}>Found {data.length} results</p></div>}
